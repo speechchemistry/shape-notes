@@ -113,107 +113,31 @@
             var audioBufferSourceNode = player.queueWaveTable(audioContext, audioContext.destination, selectedPreset, audioContext.currentTime, pitch + 12 * octave + key, 4);
         }
 
-        const do4_hex = document.getElementById('do4')
-        do4_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(doe, 4, parseInt(slider.value))
-        });
+        function addHexagonEventListener(id, pitch, octave) {
+            const hex = document.getElementById(id);
+            hex.addEventListener('touchstart', (event) => {
+                event.preventDefault();
+                playSolfa(pitch, octave, parseInt(slider.value));
+            });
+        }
 
-        const re4_hex = document.getElementById('re4')
-        re4_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(re, 4, parseInt(slider.value))
-        });
-
-        const mi4_hex = document.getElementById('mi4')
-        mi4_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(mi, 4, parseInt(slider.value))
-        });
-
-        const fa4_hex = document.getElementById('fa4')
-        fa4_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(fa, 4, parseInt(slider.value))
-        });
-
-        const so4_hex = document.getElementById('so4')
-        so4_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(so, 4, parseInt(slider.value))
-        });
-
-        const la4_hex = document.getElementById('la4')
-        la4_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(la, 4, parseInt(slider.value))
-        });
-
-        const ti4_hex = document.getElementById('ti4')
-        ti4_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(ti, 4, parseInt(slider.value))
-        });
-
-        const do5_hex = document.getElementById('do5')
-        do5_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(doe, 5, parseInt(slider.value))
-        });
-
-        const re5_hex = document.getElementById('re5')
-        re5_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(re, 5, parseInt(slider.value))
-        });
-
-        const mi5_hex = document.getElementById('mi5')
-        mi5_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(mi, 5, parseInt(slider.value))
-        });
-
-        const fa5_hex = document.getElementById('fa5')
-        fa5_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(fa, 5, parseInt(slider.value))
-        });
-
-        const so5_hex = document.getElementById('so5')
-        so5_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(so, 5, parseInt(slider.value))
-        });
-
-        const la5_hex = document.getElementById('la5')
-        la5_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(la, 5, parseInt(slider.value))
-        });
-
-        const ti5_hex = document.getElementById('ti5')
-        ti5_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(ti, 5, parseInt(slider.value))
-        });
-
-        const do6_hex = document.getElementById('do6')
-        do6_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(doe, 6, parseInt(slider.value))
-        });
-
-        const re6_hex = document.getElementById('re6')
-        re6_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(re, 6, parseInt(slider.value))
-        });
-
-        const mi6_hex = document.getElementById('mi6')
-        mi6_hex.addEventListener('touchstart',(event) => {
-            event.preventDefault();
-            playSolfa(mi, 6, parseInt(slider.value))
-        });
+        addHexagonEventListener('do4', doe, 4);
+        addHexagonEventListener('re4', re, 4);
+        addHexagonEventListener('mi4', mi, 4);
+        addHexagonEventListener('fa4', fa, 4);
+        addHexagonEventListener('so4', so, 4);
+        addHexagonEventListener('la4', la, 4);
+        addHexagonEventListener('ti4', ti, 4);
+        addHexagonEventListener('do5', doe, 5);
+        addHexagonEventListener('re5', re, 5);
+        addHexagonEventListener('mi5', mi, 5);
+        addHexagonEventListener('fa5', fa, 5);
+        addHexagonEventListener('so5', so, 5);
+        addHexagonEventListener('la5', la, 5);
+        addHexagonEventListener('ti5', ti, 5);
+        addHexagonEventListener('do6', doe, 6);
+        addHexagonEventListener('re6', re, 6);
+        addHexagonEventListener('mi6', mi, 6);
 
     </script>
 </body>
