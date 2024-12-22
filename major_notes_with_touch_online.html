@@ -9,18 +9,18 @@
 
 <body>
     <svg viewBox="0 0 400 500">
-    <!--- this current section from https://commons.wikimedia.org/wiki/File:Hexagon_Tiling.svg -->
-    <!--- CC-BY-SA Apocheir -->
+    <!-- this current section from https://commons.wikimedia.org/wiki/File:Hexagon_Tiling.svg -->
+    <!-- CC-BY-SA Apocheir -->
     <defs>
         <g id="Hexagon">
             <!-- that pointer-events allows it to be clickable with a fill of none https://stackoverflow.com/questions/6042550/svg-fill-color-transparency-alpha -->
             <polygon points="
-    		0,-57.73502692
-    		50,-28.86751346 
-    		50,28.86751346
-    		0, 57.73502692
-    		-50,28.86751346
-    		-50,-28.86751346 " fill="none" pointer-events="visible" stroke="#888" />
+                0,-57.73502692
+                50,-28.86751346 
+                50,28.86751346
+                0, 57.73502692
+                -50,28.86751346
+                -50,-28.86751346 " fill="none" pointer-events="visible" stroke="#888" />
         </g>
     </defs>
 
@@ -95,14 +95,14 @@
         var audioContext = new AudioContextFunc();
         var player = new WebAudioFontPlayer();
         var doe = 0, ra = 1, re = 2, ma = 3, mi = 4, fa = 5, fi = 6, so = 7, lo = 8, la = 9, ta = 10, ti = 11;
-        var letter_keys = ["C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"]
+        var letterKeys = ["C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"]
 
         var slider = document.getElementById("tonic");
         var output = document.getElementById("demo");
-        output.innerHTML = letter_keys[slider.value];
+        output.innerHTML = letterKeys[slider.value];
 
         slider.oninput = function () {
-            output.innerHTML = letter_keys[this.value];
+            output.innerHTML = letterKeys[this.value];
         }
 
         player.adjustPreset(audioContext, selectedPreset);
