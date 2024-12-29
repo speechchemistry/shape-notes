@@ -3,85 +3,85 @@
 
 <head>
     <style>
-        body { background-color: #797979; }
-        .hexagon { fill: none; pointer-events: visible; stroke: #888; }
-        .hexagon-touched { fill: #a9a9a9; } /* Lighter shade of grey */
+        body {
+            background-color: #797979;
+        }
     </style>
 </head>
 
 <body>
     <svg viewBox="0 0 400 500">
-    <!-- this current section from https://commons.wikimedia.org/wiki/File:Hexagon_Tiling.svg -->
-    <!-- CC-BY-SA Apocheir -->
-    <defs>
-        <g id="Hexagon">
-            <!-- that pointer-events allows it to be clickable with a fill of none https://stackoverflow.com/questions/6042550/svg-fill-color-transparency-alpha -->
-            <polygon points="
+        <!-- this current section from https://commons.wikimedia.org/wiki/File:Hexagon_Tiling.svg -->
+        <!-- CC-BY-SA Apocheir -->
+        <defs>
+            <g id="Hexagon">
+                <!-- that pointer-events allows it to be clickable with a fill of none https://stackoverflow.com/questions/6042550/svg-fill-color-transparency-alpha -->
+                <polygon points="
                 0,-57.73502692
                 50,-28.86751346 
                 50,28.86751346
                 0, 57.73502692
                 -50,28.86751346
-                -50,-28.86751346 " class="hexagon" />
-        </g>
-    </defs>
+                -50,-28.86751346 " fill="none" pointer-events="visible" stroke="#888" />
+            </g>
+        </defs>
 
-    <path class="Note" fill="#5728a4" transform="translate(100 413.3974596) scale(2) translate(-17.8 0)"
-        d="M17.9063,-12.5 L0,12.5 L35.6094,12.5 L17.9063,-12.5 " />
-    <use id="do4" href="#Hexagon" transform="translate(100 413.3974596)" />
-    <path class="Note" fill="#be006a" transform="translate(200 413.3974596) scale(2) translate(-17.8 0)"
-        d="M0,-12.5 L0,-1.70313 C0,2.79688 2.70313,12.5 18,12.5 C33.4063,12.5 36.1094,2.59375 36.1094,-1.70313 L36.1094,-12.5 L0,-12.5 " />
-    <use id="re4" href="#Hexagon" transform="translate(200 413.3974596)" />
-    <path class="Note" fill="#ed6f00" transform="translate(300 413.3974596) scale(2) translate(-17.8 0)"
-        d="M18.2969,-13.7031 L0,0 L17.7031,13.7969 L36.1094,0 L18.2969,-13.7031 " />
-    <use id="mi4" href="#Hexagon" transform="translate(300 413.3974596)" />
+        <path class="Note" fill="#5728a4" transform="translate(100 413.3974596) scale(2) translate(-17.8 0)"
+            d="M17.9063,-12.5 L0,12.5 L35.6094,12.5 L17.9063,-12.5 " />
+        <use id="do4" href="#Hexagon" transform="translate(100 413.3974596)" />
+        <path class="Note" fill="#be006a" transform="translate(200 413.3974596) scale(2) translate(-17.8 0)"
+            d="M0,-12.5 L0,-1.70313 C0,2.79688 2.70313,12.5 18,12.5 C33.4063,12.5 36.1094,2.59375 36.1094,-1.70313 L36.1094,-12.5 L0,-12.5 " />
+        <use id="re4" href="#Hexagon" transform="translate(200 413.3974596)" />
+        <path class="Note" fill="#ed6f00" transform="translate(300 413.3974596) scale(2) translate(-17.8 0)"
+            d="M18.2969,-13.7031 L0,0 L17.7031,13.7969 L36.1094,0 L18.2969,-13.7031 " />
+        <use id="mi4" href="#Hexagon" transform="translate(300 413.3974596)" />
 
 
-    <path class="Note" fill="#0058b8" transform="translate(50 326.7949192) scale(2) translate(-17.8 0)"
-        d="M36,12.5 L36,-12.5 L0,-12.5 L36,12.5 " />
-    <use id="fa4" href="#Hexagon" transform="translate(50 326.7949192)" />
-    <path class="Note" fill="#8d008e" transform="translate(150 326.7949192) scale(2) translate(-17.8 0)"
-        d="M0,4.70313 C0,10.4063 5.29688,13.7969 12,13.7969 C23,13.7969 36.4063,4.79688 36.4063,-4.70313 C36.4063,-10.2969 31.4063,-13.7969 24.4063,-13.7969 C10.9063,-13.7969 0,-4.90625 0,4.70313" />
-    <use id="so4" href="#Hexagon" transform="translate(150 326.7949192)" />
-    <path class="Note" fill="#e52e43" transform="translate(250 326.7949192) scale(2) translate(-17.8 0)"
-        d="M36,-11.5 L0,-11.5 L0,11.5 L36,11.5 L36,-11.5 " />
-    <use id="la4" href="#Hexagon" transform="translate(250 326.7949192)" />
-    <path class="Note" fill="#db9b00" transform="translate(350 326.7949192) scale(2) translate(-17.8 0)"
-        d="M17.7969,12.5 L35.6094,-4.29688 C31.2969,-9.40625 24.9063,-12.5 17.7969,-12.5 C10.7031,-12.5 4.29688,-9.40625 0,-4.29688 L17.7969,12.5 " />
-    <use id="ti4" href="#Hexagon" transform="translate(350 326.7949192)" />
+        <path class="Note" fill="#0058b8" transform="translate(50 326.7949192) scale(2) translate(-17.8 0)"
+            d="M36,12.5 L36,-12.5 L0,-12.5 L36,12.5 " />
+        <use id="fa4" href="#Hexagon" transform="translate(50 326.7949192)" />
+        <path class="Note" fill="#8d008e" transform="translate(150 326.7949192) scale(2) translate(-17.8 0)"
+            d="M0,4.70313 C0,10.4063 5.29688,13.7969 12,13.7969 C23,13.7969 36.4063,4.79688 36.4063,-4.70313 C36.4063,-10.2969 31.4063,-13.7969 24.4063,-13.7969 C10.9063,-13.7969 0,-4.90625 0,4.70313" />
+        <use id="so4" href="#Hexagon" transform="translate(150 326.7949192)" />
+        <path class="Note" fill="#e52e43" transform="translate(250 326.7949192) scale(2) translate(-17.8 0)"
+            d="M36,-11.5 L0,-11.5 L0,11.5 L36,11.5 L36,-11.5 " />
+        <use id="la4" href="#Hexagon" transform="translate(250 326.7949192)" />
+        <path class="Note" fill="#db9b00" transform="translate(350 326.7949192) scale(2) translate(-17.8 0)"
+            d="M17.7969,12.5 L35.6094,-4.29688 C31.2969,-9.40625 24.9063,-12.5 17.7969,-12.5 C10.7031,-12.5 4.29688,-9.40625 0,-4.29688 L17.7969,12.5 " />
+        <use id="ti4" href="#Hexagon" transform="translate(350 326.7949192)" />
 
-    <path class="Note" fill="#5728a4" transform="translate(100 240.1923789) scale(2) translate(-17.8 0)"
-        d="M17.9063,-12.5 L0,12.5 L35.6094,12.5 L17.9063,-12.5 " />
-    <use id="do5" href="#Hexagon" transform="translate(100 240.1923789)" />
-    <path class="Note" fill="#be006a" transform="translate(200 240.1923789) scale(2) translate(-17.8 0)"
-        d="M0,-12.5 L0,-1.70313 C0,2.79688 2.70313,12.5 18,12.5 C33.4063,12.5 36.1094,2.59375 36.1094,-1.70313 L36.1094,-12.5 L0,-12.5 " />
-    <use id="re5" href="#Hexagon" transform="translate(200 240.1923789)" />
-    <path class="Note" fill="#ed6f00" transform="translate(300 240.1923789) scale(2) translate(-17.8 0)"
-        d="M18.2969,-13.7031 L0,0 L17.7031,13.7969 L36.1094,0 L18.2969,-13.7031 " />
-    <use id="mi5" href="#Hexagon" transform="translate(300 240.1923789)" />
+        <path class="Note" fill="#5728a4" transform="translate(100 240.1923789) scale(2) translate(-17.8 0)"
+            d="M17.9063,-12.5 L0,12.5 L35.6094,12.5 L17.9063,-12.5 " />
+        <use id="do5" href="#Hexagon" transform="translate(100 240.1923789)" />
+        <path class="Note" fill="#be006a" transform="translate(200 240.1923789) scale(2) translate(-17.8 0)"
+            d="M0,-12.5 L0,-1.70313 C0,2.79688 2.70313,12.5 18,12.5 C33.4063,12.5 36.1094,2.59375 36.1094,-1.70313 L36.1094,-12.5 L0,-12.5 " />
+        <use id="re5" href="#Hexagon" transform="translate(200 240.1923789)" />
+        <path class="Note" fill="#ed6f00" transform="translate(300 240.1923789) scale(2) translate(-17.8 0)"
+            d="M18.2969,-13.7031 L0,0 L17.7031,13.7969 L36.1094,0 L18.2969,-13.7031 " />
+        <use id="mi5" href="#Hexagon" transform="translate(300 240.1923789)" />
 
-    <path class="Note" fill="#0058b8" transform="translate(50 153.5898385) scale(2) translate(-17.8 0)"
-        d="M36,12.5 L36,-12.5 L0,-12.5 L36,12.5 " />
-    <use id="fa5" href="#Hexagon" transform="translate(50 153.5898385)" />
-    <path class="Note" fill="#8d008e" transform="translate(150 153.5898385) scale(2) translate(-17.8 0)"
-    d="M0,4.70313 C0,10.4063 5.29688,13.7969 12,13.7969 C23,13.7969 36.4063,4.79688 36.4063,-4.70313 C36.4063,-10.2969 31.4063,-13.7969 24.4063,-13.7969 C10.9063,-13.7969 0,-4.90625 0,4.70313" />
-    <use id="so5" href="#Hexagon" transform="translate(150 153.5898385)" />
-    <path class="Note" fill="#e52e43" transform="translate(250 153.5898385) scale(2) translate(-17.8 0)"
-        d="M36,-11.5 L0,-11.5 L0,11.5 L36,11.5 L36,-11.5 " />
-    <use id="la5" href="#Hexagon" transform="translate(250 153.5898385)" />
-    <path class="Note" fill="#db9b00" transform="translate(350 153.5898385) scale(2) translate(-17.8 0)"
-        d="M17.7969,12.5 L35.6094,-4.29688 C31.2969,-9.40625 24.9063,-12.5 17.7969,-12.5 C10.7031,-12.5 4.29688,-9.40625 0,-4.29688 L17.7969,12.5 " />
-    <use id="ti5" href="#Hexagon" transform="translate(350 153.5898385)" />
+        <path class="Note" fill="#0058b8" transform="translate(50 153.5898385) scale(2) translate(-17.8 0)"
+            d="M36,12.5 L36,-12.5 L0,-12.5 L36,12.5 " />
+        <use id="fa5" href="#Hexagon" transform="translate(50 153.5898385)" />
+        <path class="Note" fill="#8d008e" transform="translate(150 153.5898385) scale(2) translate(-17.8 0)"
+            d="M0,4.70313 C0,10.4063 5.29688,13.7969 12,13.7969 C23,13.7969 36.4063,4.79688 36.4063,-4.70313 C36.4063,-10.2969 31.4063,-13.7969 24.4063,-13.7969 C10.9063,-13.7969 0,-4.90625 0,4.70313" />
+        <use id="so5" href="#Hexagon" transform="translate(150 153.5898385)" />
+        <path class="Note" fill="#e52e43" transform="translate(250 153.5898385) scale(2) translate(-17.8 0)"
+            d="M36,-11.5 L0,-11.5 L0,11.5 L36,11.5 L36,-11.5 " />
+        <use id="la5" href="#Hexagon" transform="translate(250 153.5898385)" />
+        <path class="Note" fill="#db9b00" transform="translate(350 153.5898385) scale(2) translate(-17.8 0)"
+            d="M17.7969,12.5 L35.6094,-4.29688 C31.2969,-9.40625 24.9063,-12.5 17.7969,-12.5 C10.7031,-12.5 4.29688,-9.40625 0,-4.29688 L17.7969,12.5 " />
+        <use id="ti5" href="#Hexagon" transform="translate(350 153.5898385)" />
 
-    <path class="Note" fill="#5728a4" transform="translate(100 66.98729811) scale(2) translate(-17.8 0)"
-        d="M17.9063,-12.5 L0,12.5 L35.6094,12.5 L17.9063,-12.5 " />
-    <use id="do6" href="#Hexagon" transform="translate(100 66.98729811)" />
-    <path class="Note" fill="#be006a" transform="translate(200 66.98729811) scale(2) translate(-17.8 0)"
-        d="M0,-12.5 L0,-1.70313 C0,2.79688 2.70313,12.5 18,12.5 C33.4063,12.5 36.1094,2.59375 36.1094,-1.70313 L36.1094,-12.5 L0,-12.5 " />
-    <use id="re6" href="#Hexagon" transform="translate(200 66.98729811)" />
-    <path class="Note" fill="#ed6f00" transform="translate(300 66.98729811) scale(2) translate(-17.8 0)"
-        d="M18.2969,-13.7031 L0,0 L17.7031,13.7969 L36.1094,0 L18.2969,-13.7031 " />
-    <use id="mi6" href="#Hexagon" transform="translate(300 66.98729811)" />
+        <path class="Note" fill="#5728a4" transform="translate(100 66.98729811) scale(2) translate(-17.8 0)"
+            d="M17.9063,-12.5 L0,12.5 L35.6094,12.5 L17.9063,-12.5 " />
+        <use id="do6" href="#Hexagon" transform="translate(100 66.98729811)" />
+        <path class="Note" fill="#be006a" transform="translate(200 66.98729811) scale(2) translate(-17.8 0)"
+            d="M0,-12.5 L0,-1.70313 C0,2.79688 2.70313,12.5 18,12.5 C33.4063,12.5 36.1094,2.59375 36.1094,-1.70313 L36.1094,-12.5 L0,-12.5 " />
+        <use id="re6" href="#Hexagon" transform="translate(200 66.98729811)" />
+        <path class="Note" fill="#ed6f00" transform="translate(300 66.98729811) scale(2) translate(-17.8 0)"
+            d="M18.2969,-13.7031 L0,0 L17.7031,13.7969 L36.1094,0 L18.2969,-13.7031 " />
+        <use id="mi6" href="#Hexagon" transform="translate(300 66.98729811)" />
     </svg>
 
     <div class="slidecontainer">
@@ -97,7 +97,7 @@
         var audioContext = new AudioContextFunc();
         var player = new WebAudioFontPlayer();
         var doe = 0, ra = 1, re = 2, ma = 3, mi = 4, fa = 5, fi = 6, so = 7, lo = 8, la = 9, ta = 10, ti = 11;
-        var letterKeys = ["C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"]
+        var letterKeys = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"]
 
         var slider = document.getElementById("tonic");
         var output = document.getElementById("demo");
@@ -105,7 +105,7 @@
 
         slider.oninput = function () {
             output.innerHTML = letterKeys[this.value];
-        };
+        }
 
         player.adjustPreset(audioContext, selectedPreset);
         //function startWaveTableNow(pitch) {
@@ -120,10 +120,6 @@
             hex.addEventListener('touchstart', (event) => {
                 event.preventDefault();
                 playSolfa(pitch, octave, parseInt(slider.value));
-                hex.classList.add('hexagon-touched');
-                setTimeout(() => {
-                    hex.classList.remove('hexagon-touched');
-                }, 200); // Change back after 200ms
             });
         }
 
@@ -147,4 +143,3 @@
 
     </script>
 </body>
-</html>
