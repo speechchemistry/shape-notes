@@ -3,7 +3,9 @@
 
 <head>
     <style>
-        body{ background-color: #797979;}
+        body { background-color: #797979; }
+        .hexagon { fill: none; pointer-events: visible; stroke: #888; }
+        .hexagon-touched { fill: #a9a9a9; } /* Lighter shade of grey */
     </style>
 </head>
 
@@ -20,7 +22,7 @@
                 50,28.86751346
                 0, 57.73502692
                 -50,28.86751346
-                -50,-28.86751346 " fill="none" pointer-events="visible" stroke="#888" />
+                -50,-28.86751346 " class="hexagon" />
         </g>
     </defs>
 
@@ -103,7 +105,7 @@
 
         slider.oninput = function () {
             output.innerHTML = letterKeys[this.value];
-        }
+        };
 
         player.adjustPreset(audioContext, selectedPreset);
         //function startWaveTableNow(pitch) {
@@ -118,6 +120,10 @@
             hex.addEventListener('touchstart', (event) => {
                 event.preventDefault();
                 playSolfa(pitch, octave, parseInt(slider.value));
+                hex.classList.add('hexagon-touched');
+                setTimeout(() => {
+                    hex.classList.remove('hexagon-touched');
+                }, 200); // Change back after 200ms
             });
         }
 
@@ -141,3 +147,4 @@
 
     </script>
 </body>
+</html>
