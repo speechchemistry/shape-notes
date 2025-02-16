@@ -135,8 +135,13 @@
         // Helper function to bind a touch event to each hexagon note
         function addHexagonEventListener(id, pitch, octave) {
             const hex = document.getElementById(id);
-            // Add a touchstart event to play the note
+            // Add touchstart event to play the note
             hex.addEventListener('touchstart', (event) => {
+                event.preventDefault();
+                playSolfa(pitch, octave, parseInt(slider.value));
+            });
+            // Add touchmove event to play the note when sliding
+            hex.addEventListener('touchmove', (event) => {
                 event.preventDefault();
                 playSolfa(pitch, octave, parseInt(slider.value));
             });
