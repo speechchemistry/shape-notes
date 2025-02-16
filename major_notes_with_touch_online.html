@@ -3,6 +3,7 @@
 
 <head>
     <style>
+        /* Set a dark background for the page */
         body {
             background-color: #797979;
         }
@@ -10,6 +11,7 @@
 </head>
 
 <body>
+    <!-- SVG Section: Renders the hexagon tiling and note shapes -->
     <svg viewBox="0 0 400 500">
         <!-- this current section from https://commons.wikimedia.org/wiki/File:Hexagon_Tiling.svg -->
         <!-- CC-BY-SA Apocheir -->
@@ -84,32 +86,42 @@
         <use id="mi6" href="#Hexagon" transform="translate(300 66.98729811)" />
     </svg>
 
+    <!-- Slider for selecting the musical key -->
     <div class="slidecontainer">
         <input type="range" min="0" max="11" value="0" class="slider" id="tonic">
         <p>Key: <span id="demo"></span></p>
     </div>
 
+    <!-- Load external libraries for WebAudioFont -->
     <script src='https://surikov.github.io/webaudiofont/npm/dist/WebAudioFontPlayer.js'></script>
     <script src='https://surikov.github.io/webaudiofontdata/sound/0000_JCLive_sf2_file.js'></script>
     <script>
+        // Initialize Web Audio API and the audio player
         const selectedPreset = _tone_0000_JCLive_sf2_file;
         const AudioContextFunc = window.AudioContext || window.webkitAudioContext;
         const audioContext = new AudioContextFunc();
         const player = new WebAudioFontPlayer();
+
+        // Note pitch offsets for solfa notation
         const doe = 0, ra = 1, re = 2, ma = 3, mi = 4, fa = 5, fi = 6, so = 7, lo = 8, la = 9, ta = 10, ti = 11;
         const letterKeys = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
 
+        // Get slider element and display initial key value
         const slider = document.getElementById("tonic");
         const output = document.getElementById("demo");
         output.innerHTML = letterKeys[slider.value];
 
+        // Update displayed key when slider value changes
         slider.oninput = function () {
             output.innerHTML = letterKeys[this.value];
         }
 
+        // Adjust the preset volume settings before playing notes
         player.adjustPreset(audioContext, selectedPreset);
 
+        // Function to play a note using the selected preset
         function playSolfa(pitch, octave, key) {
+            // Queue the note with calculated pitch from solfa and octave
             const audioBufferSourceNode = player.queueWaveTable(
                 audioContext,
                 audioContext.destination,
@@ -120,14 +132,17 @@
             );
         }
 
+        // Helper function to bind a touch event to each hexagon note
         function addHexagonEventListener(id, pitch, octave) {
             const hex = document.getElementById(id);
+            // Add a touchstart event to play the note
             hex.addEventListener('touchstart', (event) => {
                 event.preventDefault();
                 playSolfa(pitch, octave, parseInt(slider.value));
             });
         }
 
+        // Bind event listeners for all displayed notes
         addHexagonEventListener('do4', doe, 4);
         addHexagonEventListener('re4', re, 4);
         addHexagonEventListener('mi4', mi, 4);
