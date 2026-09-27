@@ -15,6 +15,25 @@
             -webkit-user-select: none;
             user-select: none;
         }
+
+        /* Base look of every hexagon key. These properties live here rather
+           than on the shared <polygon> in <defs> so they're inherited
+           per <use> instance, which lets .active below recolor just one
+           key at a time. */
+        svg use[href="#Hexagon"] {
+            fill: none;
+            stroke: #888;
+            pointer-events: visible;
+        }
+
+        /* Highlight for whichever hexagon a pointer is currently over.
+           Stroke is left unchanged (only fill lightens) because adjacent
+           hexagons share edges: a bolder stroke on just one of them makes
+           whichever hexagon comes later in the SVG's paint order win at
+           that shared edge, which looked inconsistent. */
+        svg use[href="#Hexagon"].active {
+            fill: rgba(255, 255, 255, 0.2);
+        }
     </style>
 </head>
 
@@ -25,14 +44,17 @@
         <!-- CC-BY-SA Apocheir -->
         <defs>
             <g id="Hexagon">
-                <!-- that pointer-events allows it to be clickable with a fill of none https://stackoverflow.com/questions/6042550/svg-fill-color-transparency-alpha -->
+                <!-- fill/stroke/pointer-events are set in the <style> block on
+                     use[href="#Hexagon"] instead of here, so they're inherited
+                     per <use> instance and can be overridden individually
+                     (e.g. by .active) rather than fixed for every hexagon -->
                 <polygon points="
                 0,-57.73502692
-                50,-28.86751346 
+                50,-28.86751346
                 50,28.86751346
                 0, 57.73502692
                 -50,28.86751346
-                -50,-28.86751346 " fill="none" pointer-events="visible" stroke="#888" />
+                -50,-28.86751346 " />
             </g>
         </defs>
 
@@ -174,8 +196,17 @@
             playSolfa(note.pitch, note.octave, parseInt(slider.value));
         }
 
+        // Updates which hex is highlighted for a pointer, removing the
+        // highlight from whatever it was previously over (if anything).
+        function setActiveHex(pointerId, hexEl) {
+            const previous = activeHexByPointer.get(pointerId);
+            if (previous) previous.classList.remove('active');
+            if (hexEl) hexEl.classList.add('active');
+            activeHexByPointer.set(pointerId, hexEl || null);
+        }
+
         // pointerdown: start tracking this pointer (mouse button or finger).
-        // If it landed on a key, play it.
+        // If it landed on a key, play it and highlight it.
         function handlePointerDown(event) {
             event.preventDefault();
             // Keep receiving move/up events for this pointer even if it
@@ -184,14 +215,14 @@
             const hexEl = resolveNoteElement(
                 document.elementFromPoint(event.clientX, event.clientY)
             );
-            activeHexByPointer.set(event.pointerId, hexEl);
+            setActiveHex(event.pointerId, hexEl);
             if (hexEl) playHex(hexEl);
         }
 
         // pointermove: only matters for pointers we're already tracking.
         // Re-hit-test at the current position; if it's now over a different
         // hex than before (including moving into/out of a gap between keys),
-        // update the tracked hex and replay if it's landed on a key. This is
+        // move the highlight and replay if it's landed on a key. This is
         // what lets sliding back onto the same key after a gap replay it,
         // since these are one-shot samples rather than sustained notes.
         function handlePointerMove(event) {
@@ -202,13 +233,16 @@
             );
             const current = activeHexByPointer.get(event.pointerId);
             if (hexEl === current) return;
-            activeHexByPointer.set(event.pointerId, hexEl);
+            setActiveHex(event.pointerId, hexEl);
             if (hexEl) playHex(hexEl);
         }
 
-        // pointerup/pointercancel: stop tracking this pointer. No "note off"
-        // is needed since notes are one-shot samples with their own decay.
+        // pointerup/pointercancel: stop tracking this pointer and clear its
+        // highlight. No "note off" is needed since notes are one-shot
+        // samples with their own decay.
         function handlePointerUp(event) {
+            const previous = activeHexByPointer.get(event.pointerId);
+            if (previous) previous.classList.remove('active');
             activeHexByPointer.delete(event.pointerId);
         }
 
