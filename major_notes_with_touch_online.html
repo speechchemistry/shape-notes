@@ -12,7 +12,7 @@
 
 <body>
     <!-- SVG Section: Renders the hexagon tiling and note shapes -->
-    <svg viewBox="0 0 400 500">
+    <svg id="keyboard" viewBox="0 0 400 500">
         <!-- this current section from https://commons.wikimedia.org/wiki/File:Hexagon_Tiling.svg -->
         <!-- CC-BY-SA Apocheir -->
         <defs>
@@ -132,34 +132,63 @@
             );
         }
 
-        // Helper function to bind a touch event to each hexagon note
-        function addHexagonEventListener(id, pitch, octave) {
-            const hex = document.getElementById(id);
-            // Add a touchstart event to play the note
-            hex.addEventListener('touchstart', (event) => {
-                event.preventDefault();
-                playSolfa(pitch, octave, parseInt(slider.value));
-            });
+        // Note metadata for every hexagon key, looked up by the <use> element's id
+        const noteDefs = [
+            ['do4', doe, 4], ['re4', re, 4], ['mi4', mi, 4],
+            ['fa4', fa, 4], ['so4', so, 4], ['la4', la, 4], ['ti4', ti, 4],
+            ['do5', doe, 5], ['re5', re, 5], ['mi5', mi, 5],
+            ['fa5', fa, 5], ['so5', so, 5], ['la5', la, 5], ['ti5', ti, 5],
+            ['do6', doe, 6], ['re6', re, 6], ['mi6', mi, 6],
+        ];
+        const noteMap = new Map(
+            noteDefs.map(([id, pitch, octave]) => [id, { pitch, octave }])
+        );
+
+        const svgEl = document.getElementById('keyboard');
+
+        // Tracks, per pointerId (one entry per finger or the mouse), which
+        // hexagon <use> element that pointer is currently over.
+        const activeHexByPointer = new Map();
+
+        // elementFromPoint() is expected to resolve straight to the
+        // <use id="..."> under the pointer, but walk up parentElement
+        // defensively in case something else is returned.
+        function resolveNoteElement(el) {
+            while (el instanceof Element) {
+                if (noteMap.has(el.id)) return el;
+                el = el.parentElement;
+            }
+            return null;
         }
 
-        // Bind event listeners for all displayed notes
-        addHexagonEventListener('do4', doe, 4);
-        addHexagonEventListener('re4', re, 4);
-        addHexagonEventListener('mi4', mi, 4);
-        addHexagonEventListener('fa4', fa, 4);
-        addHexagonEventListener('so4', so, 4);
-        addHexagonEventListener('la4', la, 4);
-        addHexagonEventListener('ti4', ti, 4);
-        addHexagonEventListener('do5', doe, 5);
-        addHexagonEventListener('re5', re, 5);
-        addHexagonEventListener('mi5', mi, 5);
-        addHexagonEventListener('fa5', fa, 5);
-        addHexagonEventListener('so5', so, 5);
-        addHexagonEventListener('la5', la, 5);
-        addHexagonEventListener('ti5', ti, 5);
-        addHexagonEventListener('do6', doe, 6);
-        addHexagonEventListener('re6', re, 6);
-        addHexagonEventListener('mi6', mi, 6);
+        function playHex(hexEl) {
+            const note = noteMap.get(hexEl.id);
+            playSolfa(note.pitch, note.octave, parseInt(slider.value));
+        }
+
+        // pointerdown: start tracking this pointer (mouse button or finger).
+        // If it landed on a key, play it.
+        function handlePointerDown(event) {
+            event.preventDefault();
+            // Keep receiving move/up events for this pointer even if it
+            // drags outside the SVG's own bounds.
+            svgEl.setPointerCapture(event.pointerId);
+            const hexEl = resolveNoteElement(
+                document.elementFromPoint(event.clientX, event.clientY)
+            );
+            activeHexByPointer.set(event.pointerId, hexEl);
+            if (hexEl) playHex(hexEl);
+        }
+
+        // pointerup/pointercancel: stop tracking this pointer. No "note off"
+        // is needed since notes are one-shot samples with their own decay.
+        function handlePointerUp(event) {
+            activeHexByPointer.delete(event.pointerId);
+        }
+
+        svgEl.addEventListener('pointerdown', handlePointerDown, { passive: false });
+        svgEl.addEventListener('pointerup', handlePointerUp);
+        svgEl.addEventListener('pointercancel', handlePointerUp);
 
     </script>
 </body>
