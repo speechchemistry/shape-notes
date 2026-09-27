@@ -7,6 +7,14 @@
         body {
             background-color: #797979;
         }
+
+        /* Stop the browser's own scroll/zoom/selection gestures from
+           competing with a finger tracing across the keyboard */
+        svg {
+            touch-action: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
     </style>
 </head>
 
@@ -180,6 +188,24 @@
             if (hexEl) playHex(hexEl);
         }
 
+        // pointermove: only matters for pointers we're already tracking.
+        // Re-hit-test at the current position; if it's now over a different
+        // hex than before (including moving into/out of a gap between keys),
+        // update the tracked hex and replay if it's landed on a key. This is
+        // what lets sliding back onto the same key after a gap replay it,
+        // since these are one-shot samples rather than sustained notes.
+        function handlePointerMove(event) {
+            if (!activeHexByPointer.has(event.pointerId)) return;
+            event.preventDefault();
+            const hexEl = resolveNoteElement(
+                document.elementFromPoint(event.clientX, event.clientY)
+            );
+            const current = activeHexByPointer.get(event.pointerId);
+            if (hexEl === current) return;
+            activeHexByPointer.set(event.pointerId, hexEl);
+            if (hexEl) playHex(hexEl);
+        }
+
         // pointerup/pointercancel: stop tracking this pointer. No "note off"
         // is needed since notes are one-shot samples with their own decay.
         function handlePointerUp(event) {
@@ -187,6 +213,7 @@
         }
 
         svgEl.addEventListener('pointerdown', handlePointerDown, { passive: false });
+        svgEl.addEventListener('pointermove', handlePointerMove, { passive: false });
         svgEl.addEventListener('pointerup', handlePointerUp);
         svgEl.addEventListener('pointercancel', handlePointerUp);
 
