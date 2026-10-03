@@ -117,12 +117,6 @@
         <use id="mi6" href="#Hexagon" transform="translate(300 66.98729811)" />
     </svg>
 
-    <!-- Slider for selecting the musical key -->
-    <div class="slidecontainer">
-        <input type="range" min="0" max="11" value="0" class="slider" id="tonic">
-        <p>Key: <span id="demo"></span></p>
-    </div>
-
     <!-- Load external libraries for WebAudioFont -->
     <script src='https://surikov.github.io/webaudiofont/npm/dist/WebAudioFontPlayer.js'></script>
     <script src='https://surikov.github.io/webaudiofontdata/sound/0000_JCLive_sf2_file.js'></script>
@@ -135,17 +129,24 @@
 
         // Note pitch offsets for solfa notation
         const doe = 0, ra = 1, re = 2, ma = 3, mi = 4, fa = 5, fi = 6, so = 7, lo = 8, la = 9, ta = 10, ti = 11;
-        const letterKeys = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
 
-        // Get slider element and display initial key value
-        const slider = document.getElementById("tonic");
-        const output = document.getElementById("demo");
-        output.innerHTML = letterKeys[slider.value];
+        // Page options come from the URL, e.g. ?start=D3
+        const params = new URLSearchParams(window.location.search);
 
-        // Update displayed key when slider value changes
-        slider.oninput = function () {
-            output.innerHTML = letterKeys[this.value];
+        // Converts a note name like C3, Eb3 or Fs2 (s = sharp, since # in a
+        // URL starts an anchor) to a MIDI number, using C4 = middle C = 60.
+        // Returns null if the name isn't recognised.
+        function parseNoteName(name) {
+            const match = /^([A-G])(#|s|b)?(\d)$/i.exec(name || '');
+            if (!match) return null;
+            const semitones = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+            const accidental = { '#': 1, s: 1, b: -1 }[match[2]?.toLowerCase()] || 0;
+            const octave = parseInt(match[3]);
+            return 12 * (octave + 1) + semitones[match[1].toUpperCase()] + accidental;
         }
+
+        // MIDI pitch of the bottom-left "do" hexagon; defaults to C3
+        const startMidi = parseNoteName(params.get('start')) ?? 48;
 
         // Adjust the preset volume settings before playing notes
         player.adjustPreset(audioContext, selectedPreset);
@@ -156,13 +157,14 @@
 
         // Play a note using the selected preset. Returns the WebAudioFont
         // envelope, whose cancel() fades the note out.
-        function playSolfa(pitch, octave, key) {
+        // octave counts up from 4 for the bottom row of hexagons.
+        function playSolfa(pitch, octave) {
             return player.queueWaveTable(
                 audioContext,
                 audioContext.destination,
                 selectedPreset,
                 audioContext.currentTime,
-                pitch + 12 * octave + key,
+                startMidi + pitch + 12 * (octave - 4),
                 MAX_NOTE_SECONDS
             );
         }
@@ -202,7 +204,7 @@
 
         function playHex(hexEl) {
             const note = noteMap.get(hexEl.id);
-            return playSolfa(note.pitch, note.octave, parseInt(slider.value));
+            return playSolfa(note.pitch, note.octave);
         }
 
         function stopNote(pointerId) {
