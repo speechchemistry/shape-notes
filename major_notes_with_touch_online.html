@@ -12,6 +12,7 @@
            competing with a finger tracing across the keyboard */
         svg {
             touch-action: none;
+            -webkit-touch-callout: none;
             -webkit-user-select: none;
             user-select: none;
         }
@@ -264,6 +265,12 @@
         svgEl.addEventListener('pointermove', handlePointerMove, { passive: false });
         svgEl.addEventListener('pointerup', handlePointerUp);
         svgEl.addEventListener('pointercancel', handlePointerUp);
+
+        // preventDefault() on pointerdown doesn't cancel touch gestures, so
+        // block them here: long-press (Android haptic buzz) and the
+        // two-finger-tap right-click menu (Windows).
+        svgEl.addEventListener('touchstart', (event) => event.preventDefault(), { passive: false });
+        svgEl.addEventListener('contextmenu', (event) => event.preventDefault());
 
     </script>
 </body>
