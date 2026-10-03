@@ -149,16 +149,20 @@
         // Adjust the preset volume settings before playing notes
         player.adjustPreset(audioContext, selectedPreset);
 
-        // Function to play a note using the selected preset
+        // Upper bound on a note's length in case a release event is ever
+        // missed; normally the note is cancelled when the pointer lets go.
+        const MAX_NOTE_SECONDS = 60;
+
+        // Play a note using the selected preset. Returns the WebAudioFont
+        // envelope, whose cancel() fades the note out.
         function playSolfa(pitch, octave, key) {
-            // Queue the note with calculated pitch from solfa and octave
-            const audioBufferSourceNode = player.queueWaveTable(
+            return player.queueWaveTable(
                 audioContext,
                 audioContext.destination,
                 selectedPreset,
                 audioContext.currentTime,
                 pitch + 12 * octave + key,
-                4
+                MAX_NOTE_SECONDS
             );
         }
 
@@ -180,6 +184,10 @@
         // hexagon <use> element that pointer is currently over.
         const activeHexByPointer = new Map();
 
+        // Tracks, per pointerId, the envelope of the note that pointer is
+        // currently sounding, so it can be stopped when the pointer leaves.
+        const envelopeByPointer = new Map();
+
         // elementFromPoint() is expected to resolve straight to the
         // <use id="..."> under the pointer, but walk up parentElement
         // defensively in case something else is returned.
@@ -193,7 +201,13 @@
 
         function playHex(hexEl) {
             const note = noteMap.get(hexEl.id);
-            playSolfa(note.pitch, note.octave, parseInt(slider.value));
+            return playSolfa(note.pitch, note.octave, parseInt(slider.value));
+        }
+
+        function stopNote(pointerId) {
+            const envelope = envelopeByPointer.get(pointerId);
+            if (envelope) envelope.cancel();
+            envelopeByPointer.delete(pointerId);
         }
 
         // Updates which hex is highlighted for a pointer, removing the
@@ -216,15 +230,14 @@
                 document.elementFromPoint(event.clientX, event.clientY)
             );
             setActiveHex(event.pointerId, hexEl);
-            if (hexEl) playHex(hexEl);
+            if (hexEl) envelopeByPointer.set(event.pointerId, playHex(hexEl));
         }
 
         // pointermove: only matters for pointers we're already tracking.
         // Re-hit-test at the current position; if it's now over a different
         // hex than before (including moving into/out of a gap between keys),
-        // move the highlight and replay if it's landed on a key. This is
-        // what lets sliding back onto the same key after a gap replay it,
-        // since these are one-shot samples rather than sustained notes.
+        // stop the old note, move the highlight, and start the new key's
+        // note if it's landed on one.
         function handlePointerMove(event) {
             if (!activeHexByPointer.has(event.pointerId)) return;
             event.preventDefault();
@@ -233,14 +246,15 @@
             );
             const current = activeHexByPointer.get(event.pointerId);
             if (hexEl === current) return;
+            stopNote(event.pointerId);
             setActiveHex(event.pointerId, hexEl);
-            if (hexEl) playHex(hexEl);
+            if (hexEl) envelopeByPointer.set(event.pointerId, playHex(hexEl));
         }
 
-        // pointerup/pointercancel: stop tracking this pointer and clear its
-        // highlight. No "note off" is needed since notes are one-shot
-        // samples with their own decay.
+        // pointerup/pointercancel: stop this pointer's note, clear its
+        // highlight, and stop tracking it.
         function handlePointerUp(event) {
+            stopNote(event.pointerId);
             const previous = activeHexByPointer.get(event.pointerId);
             if (previous) previous.classList.remove('active');
             activeHexByPointer.delete(event.pointerId);
