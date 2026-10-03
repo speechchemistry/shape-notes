@@ -151,6 +151,11 @@
         // Adjust the preset volume settings before playing notes
         player.adjustPreset(audioContext, selectedPreset);
 
+        // ?sustain=on works like a piano's sustain pedal: notes ring for a
+        // fixed time instead of stopping when the finger lifts.
+        const sustainOn = params.get('sustain') === 'on';
+        const SUSTAIN_NOTE_SECONDS = 4;
+
         // Upper bound on a note's length in case a release event is ever
         // missed; normally the note is cancelled when the pointer lets go.
         const MAX_NOTE_SECONDS = 60;
@@ -165,7 +170,7 @@
                 selectedPreset,
                 audioContext.currentTime,
                 startMidi + pitch + 12 * (octave - 4),
-                MAX_NOTE_SECONDS
+                sustainOn ? SUSTAIN_NOTE_SECONDS : MAX_NOTE_SECONDS
             );
         }
 
@@ -209,7 +214,7 @@
 
         function stopNote(pointerId) {
             const envelope = envelopeByPointer.get(pointerId);
-            if (envelope) envelope.cancel();
+            if (envelope && !sustainOn) envelope.cancel();
             envelopeByPointer.delete(pointerId);
         }
 
