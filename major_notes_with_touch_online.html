@@ -179,12 +179,16 @@
             null, { natural: 'la' }, null, { natural: 'ti' },
         ];
 
-        // Keyboard layouts. pitchClasses lists which notes get a key;
-        // left/right are the viewBox edges in SVG units.
+        // Keyboard layouts, chosen with ?layout=, e.g. ?layout=pentatonic.
+        // pitchClasses lists which notes get a key; left/right are the
+        // viewBox edges in SVG units.
         const LAYOUTS = {
             major: { pitchClasses: [0, 2, 4, 5, 7, 9, 11], left: 0, right: 400 },
+            pentatonic: { pitchClasses: [0, 2, 4, 7, 9], left: 0, right: 400 },
         };
-        const layout = LAYOUTS.major;
+        // Unrecognised values fall back to major
+        const layoutName = params.get('layout');
+        const layout = Object.hasOwn(LAYOUTS, layoutName) ? LAYOUTS[layoutName] : LAYOUTS.major;
 
         // The hexagon grid (Wicki–Hayden). Hexagons are 100 units apart
         // side to side, and rows are 100·√3/2 apart. Each row is offset by
