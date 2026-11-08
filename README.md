@@ -1,6 +1,8 @@
 # shape-notes
 Software associated with coloured shape notes for music. The shape notes use the popular Aikin convention to show tonic solfa. Colours are based on the circle of fifths and are optimised for colour blindness.
 
+The colours are defined in [OKLCH](https://www.w3.org/TR/css-color-4/#ok-lab), a perceptual colour space that browsers support natively. The 12 hues are 30° apart, starting from a red at 24° (*la*). Lightness follows a sine wave around the hue circle, peaking at yellow-green and lowest at violet. Each colour uses 95% of the most saturated version that fits in sRGB. The background is perceptual middle grey. The full rule and values are in [issue #2](https://github.com/speechchemistry/shape-notes/issues/2#issuecomment-6709456574). Browsers without OKLCH support get the equivalent sRGB hex colours.
+
 For now I've made the Wicki–Hayden multi-touch keyboard available at [https://speechchemistry.github.io/shape-notes/major_notes_with_touch_online.html](https://speechchemistry.github.io/shape-notes/major_notes_with_touch_online.html) .
 
 ## Options

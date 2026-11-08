@@ -3,10 +3,50 @@
 
 <head>
     <style>
-        /* Set a dark background for the page */
-        body {
-            background-color: #797979;
+        /* Note colours, from the OKLCH model in issue #2: hues every 30°
+           from a red anchor at 24°, lightness following a sine wave
+           (L = 0.597 + 0.18 sin(H - 24°)), chroma at 95% of the sRGB
+           maximum. The background is perceptual middle grey.
+           The hex values are sRGB fallbacks for browsers without oklch()
+           (Safari < 15.4, Chrome < 111, Firefox < 113). */
+        :root {
+            --background: #777777;
+            --do: #5a11b4;
+            --re: #b2146d;
+            --mi: #e6791c;
+            --fa: #0336d6;
+            --so: #830f8e;
+            --la: #e91d33;
+            --ti: #daa621;
         }
+
+        /* A custom property accepts any value, so declaring the oklch()
+           version straight after the hex wouldn't fall back. Swap them in
+           only where the browser understands oklch(). */
+        @supports (color: oklch(0 0 0)) {
+            :root {
+                --background: oklch(0.569 0 0);
+                --do: oklch(0.417 0.219 294);
+                --re: oklch(0.507 0.198 354);
+                --mi: oklch(0.687 0.164 54);
+                --fa: oklch(0.441 0.243 264);
+                --so: oklch(0.441 0.197 324);
+                --la: oklch(0.597 0.229 24);
+                --ti: oklch(0.753 0.147 84);
+            }
+        }
+
+        body {
+            background-color: var(--background);
+        }
+
+        .Note.do { fill: var(--do); }
+        .Note.re { fill: var(--re); }
+        .Note.mi { fill: var(--mi); }
+        .Note.fa { fill: var(--fa); }
+        .Note.so { fill: var(--so); }
+        .Note.la { fill: var(--la); }
+        .Note.ti { fill: var(--ti); }
 
         /* Stop the browser's own scroll/zoom/selection gestures from
            competing with a finger tracing across the keyboard */
@@ -59,60 +99,60 @@
             </g>
         </defs>
 
-        <path class="Note" fill="#5728a4" transform="translate(100 413.3974596) scale(2) translate(-17.8 0)"
+        <path class="Note do" transform="translate(100 413.3974596) scale(2) translate(-17.8 0)"
             d="M17.9063,-12.5 L0,12.5 L35.6094,12.5 L17.9063,-12.5 " />
         <use id="do4" href="#Hexagon" transform="translate(100 413.3974596)" />
-        <path class="Note" fill="#be006a" transform="translate(200 413.3974596) scale(2) translate(-17.8 0)"
+        <path class="Note re" transform="translate(200 413.3974596) scale(2) translate(-17.8 0)"
             d="M0,-12.5 L0,-1.70313 C0,2.79688 2.70313,12.5 18,12.5 C33.4063,12.5 36.1094,2.59375 36.1094,-1.70313 L36.1094,-12.5 L0,-12.5 " />
         <use id="re4" href="#Hexagon" transform="translate(200 413.3974596)" />
-        <path class="Note" fill="#ed6f00" transform="translate(300 413.3974596) scale(2) translate(-17.8 0)"
+        <path class="Note mi" transform="translate(300 413.3974596) scale(2) translate(-17.8 0)"
             d="M18.2969,-13.7031 L0,0 L17.7031,13.7969 L36.1094,0 L18.2969,-13.7031 " />
         <use id="mi4" href="#Hexagon" transform="translate(300 413.3974596)" />
 
 
-        <path class="Note" fill="#0058b8" transform="translate(50 326.7949192) scale(2) translate(-17.8 0)"
+        <path class="Note fa" transform="translate(50 326.7949192) scale(2) translate(-17.8 0)"
             d="M36,12.5 L36,-12.5 L0,-12.5 L36,12.5 " />
         <use id="fa4" href="#Hexagon" transform="translate(50 326.7949192)" />
-        <path class="Note" fill="#8d008e" transform="translate(150 326.7949192) scale(2) translate(-17.8 0)"
+        <path class="Note so" transform="translate(150 326.7949192) scale(2) translate(-17.8 0)"
             d="M0,4.70313 C0,10.4063 5.29688,13.7969 12,13.7969 C23,13.7969 36.4063,4.79688 36.4063,-4.70313 C36.4063,-10.2969 31.4063,-13.7969 24.4063,-13.7969 C10.9063,-13.7969 0,-4.90625 0,4.70313" />
         <use id="so4" href="#Hexagon" transform="translate(150 326.7949192)" />
-        <path class="Note" fill="#e52e43" transform="translate(250 326.7949192) scale(2) translate(-17.8 0)"
+        <path class="Note la" transform="translate(250 326.7949192) scale(2) translate(-17.8 0)"
             d="M36,-11.5 L0,-11.5 L0,11.5 L36,11.5 L36,-11.5 " />
         <use id="la4" href="#Hexagon" transform="translate(250 326.7949192)" />
-        <path class="Note" fill="#db9b00" transform="translate(350 326.7949192) scale(2) translate(-17.8 0)"
+        <path class="Note ti" transform="translate(350 326.7949192) scale(2) translate(-17.8 0)"
             d="M17.7969,12.5 L35.6094,-4.29688 C31.2969,-9.40625 24.9063,-12.5 17.7969,-12.5 C10.7031,-12.5 4.29688,-9.40625 0,-4.29688 L17.7969,12.5 " />
         <use id="ti4" href="#Hexagon" transform="translate(350 326.7949192)" />
 
-        <path class="Note" fill="#5728a4" transform="translate(100 240.1923789) scale(2) translate(-17.8 0)"
+        <path class="Note do" transform="translate(100 240.1923789) scale(2) translate(-17.8 0)"
             d="M17.9063,-12.5 L0,12.5 L35.6094,12.5 L17.9063,-12.5 " />
         <use id="do5" href="#Hexagon" transform="translate(100 240.1923789)" />
-        <path class="Note" fill="#be006a" transform="translate(200 240.1923789) scale(2) translate(-17.8 0)"
+        <path class="Note re" transform="translate(200 240.1923789) scale(2) translate(-17.8 0)"
             d="M0,-12.5 L0,-1.70313 C0,2.79688 2.70313,12.5 18,12.5 C33.4063,12.5 36.1094,2.59375 36.1094,-1.70313 L36.1094,-12.5 L0,-12.5 " />
         <use id="re5" href="#Hexagon" transform="translate(200 240.1923789)" />
-        <path class="Note" fill="#ed6f00" transform="translate(300 240.1923789) scale(2) translate(-17.8 0)"
+        <path class="Note mi" transform="translate(300 240.1923789) scale(2) translate(-17.8 0)"
             d="M18.2969,-13.7031 L0,0 L17.7031,13.7969 L36.1094,0 L18.2969,-13.7031 " />
         <use id="mi5" href="#Hexagon" transform="translate(300 240.1923789)" />
 
-        <path class="Note" fill="#0058b8" transform="translate(50 153.5898385) scale(2) translate(-17.8 0)"
+        <path class="Note fa" transform="translate(50 153.5898385) scale(2) translate(-17.8 0)"
             d="M36,12.5 L36,-12.5 L0,-12.5 L36,12.5 " />
         <use id="fa5" href="#Hexagon" transform="translate(50 153.5898385)" />
-        <path class="Note" fill="#8d008e" transform="translate(150 153.5898385) scale(2) translate(-17.8 0)"
+        <path class="Note so" transform="translate(150 153.5898385) scale(2) translate(-17.8 0)"
             d="M0,4.70313 C0,10.4063 5.29688,13.7969 12,13.7969 C23,13.7969 36.4063,4.79688 36.4063,-4.70313 C36.4063,-10.2969 31.4063,-13.7969 24.4063,-13.7969 C10.9063,-13.7969 0,-4.90625 0,4.70313" />
         <use id="so5" href="#Hexagon" transform="translate(150 153.5898385)" />
-        <path class="Note" fill="#e52e43" transform="translate(250 153.5898385) scale(2) translate(-17.8 0)"
+        <path class="Note la" transform="translate(250 153.5898385) scale(2) translate(-17.8 0)"
             d="M36,-11.5 L0,-11.5 L0,11.5 L36,11.5 L36,-11.5 " />
         <use id="la5" href="#Hexagon" transform="translate(250 153.5898385)" />
-        <path class="Note" fill="#db9b00" transform="translate(350 153.5898385) scale(2) translate(-17.8 0)"
+        <path class="Note ti" transform="translate(350 153.5898385) scale(2) translate(-17.8 0)"
             d="M17.7969,12.5 L35.6094,-4.29688 C31.2969,-9.40625 24.9063,-12.5 17.7969,-12.5 C10.7031,-12.5 4.29688,-9.40625 0,-4.29688 L17.7969,12.5 " />
         <use id="ti5" href="#Hexagon" transform="translate(350 153.5898385)" />
 
-        <path class="Note" fill="#5728a4" transform="translate(100 66.98729811) scale(2) translate(-17.8 0)"
+        <path class="Note do" transform="translate(100 66.98729811) scale(2) translate(-17.8 0)"
             d="M17.9063,-12.5 L0,12.5 L35.6094,12.5 L17.9063,-12.5 " />
         <use id="do6" href="#Hexagon" transform="translate(100 66.98729811)" />
-        <path class="Note" fill="#be006a" transform="translate(200 66.98729811) scale(2) translate(-17.8 0)"
+        <path class="Note re" transform="translate(200 66.98729811) scale(2) translate(-17.8 0)"
             d="M0,-12.5 L0,-1.70313 C0,2.79688 2.70313,12.5 18,12.5 C33.4063,12.5 36.1094,2.59375 36.1094,-1.70313 L36.1094,-12.5 L0,-12.5 " />
         <use id="re6" href="#Hexagon" transform="translate(200 66.98729811)" />
-        <path class="Note" fill="#ed6f00" transform="translate(300 66.98729811) scale(2) translate(-17.8 0)"
+        <path class="Note mi" transform="translate(300 66.98729811) scale(2) translate(-17.8 0)"
             d="M18.2969,-13.7031 L0,0 L17.7031,13.7969 L36.1094,0 L18.2969,-13.7031 " />
         <use id="mi6" href="#Hexagon" transform="translate(300 66.98729811)" />
     </svg>
