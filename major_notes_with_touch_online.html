@@ -18,6 +18,13 @@
             --so: #830f8e;
             --la: #e91d33;
             --ti: #daa621;
+            /* Chromatic notes; each colour is shared by both spellings,
+               e.g. --di is also ra */
+            --fi: #b6c123;
+            --di: #27d23a;
+            --si: #21b395;
+            --ri: #19909a;
+            --li: #116e96;
         }
 
         /* A custom property accepts any value, so declaring the oklch()
@@ -33,6 +40,11 @@
                 --so: oklch(0.441 0.197 324);
                 --la: oklch(0.597 0.229 24);
                 --ti: oklch(0.753 0.147 84);
+                --fi: oklch(0.777 0.166 114);
+                --di: oklch(0.753 0.232 144);
+                --si: oklch(0.687 0.124 174);
+                --ri: oklch(0.597 0.097 204);
+                --li: oklch(0.507 0.101 234);
             }
         }
 
@@ -47,6 +59,14 @@
         .Note.so { fill: var(--so); }
         .Note.la { fill: var(--la); }
         .Note.ti { fill: var(--ti); }
+        .Note.fi { fill: var(--fi); }
+        .Note.di { fill: var(--di); }
+        .Note.si { fill: var(--si); }
+        .Note.ri { fill: var(--ri); }
+        .Note.li { fill: var(--li); }
+
+        /* Sharp and flat signs on chromatic keys */
+        .Accidental { fill: black; }
 
         /* Stop the browser's own scroll/zoom/selection gestures from
            competing with a finger tracing across the keyboard */
@@ -170,21 +190,42 @@
             ti: 'M17.7969,12.5 L35.6094,-4.29688 C31.2969,-9.40625 24.9063,-12.5 17.7969,-12.5 C10.7031,-12.5 4.29688,-9.40625 0,-4.29688 L17.7969,12.5',
         };
 
+        // Sharp and flat signs, centred by the translate(-11.7 0) in
+        // drawChromaticKey below
+        const ACCIDENTALS = {
+            sharp: 'M23.2969,-10.5938 C23.9063,-10.7031 24.4063,-11.4063 24.4063,-12 L24.4063,-17.9063 C24.4063,-18.7031 23.7969,-19.2969 23,-19.2969 L22.7969,-19.2969 L19.5,-18.5938 L19.5,-33.5 L16.7031,-33.5 L16.7031,-18 L7.79688,-16.2031 L7.79688,-30.2969 L5,-30.2969 L5,-15.5938 L1.09375,-14.7969 C0.5,-14.7031 0,-14 0,-13.4063 L0,-13.2031 L0,-7.40625 L0,-7.59375 C0,-6.79688 0.59375,-6.20313 1.40625,-6.20313 L1.70313,-6.20313 L5,-6.90625 L5,9.59375 L1.09375,10.4063 C0.5,10.5 0,11.2031 0,11.7969 L0,17.5938 C0,18.4063 0.59375,19 1.40625,19 L1.70313,19 L5,18.2969 L5,33.2031 L7.79688,33.2031 L7.79688,17.7031 L16.7031,15.9063 L16.7031,30 L19.5,30 L19.5,15.2969 L23.2969,14.5938 C23.9063,14.5 24.4063,13.7969 24.4063,13.2031 L24.4063,7.29688 C24.4063,6.5 23.7969,5.90625 23,5.90625 L22.7969,5.90625 L19.5,6.59375 L19.5,-9.90625 L23.2969,-10.5938 M7.79688,9.09375 L7.79688,-7.5 L16.7031,-9.29688 L16.7031,7.20313 L7.79688,9.09375',
+            flat: 'M20.0938,-7.90625 C19.5,-11.7969 17.0938,-15.5 12,-15.5 C7,-15.5 4.09375,-12.4063 3.59375,-11.7969 L4,-43.9063 C4,-44.7031 3.40625,-45.2969 2.59375,-45.2969 L1.40625,-45.2969 C0.59375,-45.2969 0,-44.7031 0,-43.9063 L0.5,16.2031 C0.5,17 1.09375,17.5938 1.90625,17.5938 C2.09375,17.5938 2.5,17.5 2.70313,17.4063 C3.09375,17.2031 9.59375,14 15,7.90625 C18.7969,3.59375 20.2969,-1.29688 20.2969,-5.40625 C20.2969,-6.29688 20.2031,-7.09375 20.0938,-7.90625 M13.2031,-4 C13.2031,-2.5 12.7969,2.09375 10.2969,5.90625 C8.59375,8.5 5.20313,11.2031 3.29688,12.7031 L3.59375,-6.79688 C3.79688,-7.70313 5.29688,-10.5938 9.29688,-10.5938 C12.9063,-10.5938 13.2031,-7.20313 13.2031,-5.09375 L13.2031,-4',
+        };
+
         // What each of the 12 pitch classes looks like, counting semitones
-        // up from do. Each key is named by the note shape it shows; the
-        // shape's colour comes from the CSS class of the same name.
+        // up from do. A natural key shows its own shape. A chromatic key
+        // shows both spellings: the sharp (the shape of the note below,
+        // with ♯) underneath, and the flat (the shape of the note above,
+        // with ♭) on top, e.g. di/ra. Colours come from the CSS class
+        // named by `natural` or `colour`.
         const PITCH_CLASSES = [
-            { natural: 'do' }, null, { natural: 're' }, null,
-            { natural: 'mi' }, { natural: 'fa' }, null, { natural: 'so' },
-            null, { natural: 'la' }, null, { natural: 'ti' },
+            { natural: 'do' },
+            { sharp: 'do', flat: 're', colour: 'di' },
+            { natural: 're' },
+            { sharp: 're', flat: 'mi', colour: 'ri' },
+            { natural: 'mi' },
+            { natural: 'fa' },
+            { sharp: 'fa', flat: 'so', colour: 'fi' },
+            { natural: 'so' },
+            { sharp: 'so', flat: 'la', colour: 'si' },
+            { natural: 'la' },
+            { sharp: 'la', flat: 'ti', colour: 'li' },
+            { natural: 'ti' },
         ];
 
         // Keyboard layouts, chosen with ?layout=, e.g. ?layout=pentatonic.
         // pitchClasses lists which notes get a key; left/right are the
-        // viewBox edges in SVG units.
+        // viewBox edges in SVG units. Only keys whose whole hexagon fits
+        // between left and right are drawn.
         const LAYOUTS = {
             major: { pitchClasses: [0, 2, 4, 5, 7, 9, 11], left: 0, right: 400 },
             pentatonic: { pitchClasses: [0, 2, 4, 7, 9], left: 0, right: 400 },
+            chromatic: { pitchClasses: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], left: -100, right: 500 },
         };
         // Unrecognised values fall back to major
         const layoutName = params.get('layout');
@@ -205,12 +246,33 @@
             return 6 * row + (x - DO_X) / 50;
         }
 
-        function drawNoteShape(parent, shape, x, y) {
+        function drawPath(parent, className, d, transform) {
             const path = document.createElementNS(SVG_NS, 'path');
-            path.setAttribute('class', `Note ${shape}`);
-            path.setAttribute('d', SHAPES[shape]);
-            path.setAttribute('transform', `translate(${x} ${y}) scale(2) translate(-17.8 0)`);
+            path.setAttribute('class', className);
+            path.setAttribute('d', d);
+            path.setAttribute('transform', transform);
             parent.appendChild(path);
+        }
+
+        // A natural key: one large shape in the middle of the hexagon
+        function drawNaturalKey(parent, note, x, y) {
+            drawPath(parent, `Note ${note.natural}`, SHAPES[note.natural],
+                `translate(${x} ${y}) scale(2) translate(-17.8 0)`);
+        }
+
+        // A chromatic key: the sharp spelling below and the flat spelling
+        // above, each a small shape with its sign to the left
+        function drawChromaticKey(parent, note, x, y) {
+            const spellings = [
+                { shape: note.sharp, sign: 'sharp', dy: 14.4337567 },
+                { shape: note.flat, sign: 'flat', dy: -14.4337567 },
+            ];
+            for (const { shape, sign, dy } of spellings) {
+                drawPath(parent, `Note ${note.colour}`, SHAPES[shape],
+                    `translate(${x} ${y + dy}) translate(-17.8 0)`);
+                drawPath(parent, 'Accidental', ACCIDENTALS[sign],
+                    `translate(${x - 25} ${y + dy}) scale(0.333) translate(-11.7 0)`);
+            }
         }
 
         // Pitch, in semitones above the bottom-left "do", of every
@@ -221,14 +283,17 @@
         for (let row = 0; row < ROWS; row++) {
             const y = 500 - ROW_HEIGHT * (row + 1);
             // Even rows have a hexagon at every multiple of 100, odd rows
-            // halfway between
-            const firstX = Math.ceil((layout.left - 50 * row) / 100) * 100 + 50 * row;
-            for (let x = firstX; x <= layout.right; x += 100) {
+            // halfway between. Hexagons are 100 wide, so a centre needs to
+            // be 50 in from each edge for the whole key to show.
+            const firstX = Math.ceil((layout.left + 50 - 50 * row) / 100) * 100 + 50 * row;
+            for (let x = firstX; x <= layout.right - 50; x += 100) {
                 const semitones = semitonesAt(x, row);
                 const pitchClass = ((semitones % 12) + 12) % 12;
                 if (!layout.pitchClasses.includes(pitchClass)) continue;
 
-                drawNoteShape(keysEl, PITCH_CLASSES[pitchClass].natural, x, y);
+                const note = PITCH_CLASSES[pitchClass];
+                if (note.natural) drawNaturalKey(keysEl, note, x, y);
+                else drawChromaticKey(keysEl, note, x, y);
 
                 // The hexagon goes after the shape so its highlight is
                 // drawn on top
