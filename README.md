@@ -12,7 +12,7 @@ Settings go in the page address rather than on screen, so they stay out of the w
 | Option | Values | Default | Effect |
 |---|---|---|---|
 | `start` | A note name such as `C3`, `D3`, `Eb3`, `Fs2` | `C3` | Pitch of the bottom-left *do* hexagon. Middle C is `C4`. Write sharps with `s` (`Fs2`), because `#` has a special meaning in web addresses. Unrecognised values fall back to `C3`. |
-| `layout` | `major`, `pentatonic`, `chromatic` | `major` | Which notes have keys. `pentatonic` leaves out *fa* and *ti*. `chromatic` has all 12 notes, with a wider keyboard; each in-between key shows both spellings (e.g. *di* and *ra*). Unrecognised values fall back to `major`. |
+| `layout` | `diatonic`, `pentatonic`, `chromatic` | `diatonic` | Which notes have keys. `diatonic` has the seven notes *do* to *ti*. `pentatonic` leaves out *fa* and *ti*. `chromatic` has all 12 notes, with a wider keyboard; each in-between key shows both spellings (e.g. *di* and *ra*). Unrecognised values fall back to `diatonic`. |
 | `sustain` | `on` | off | Off: a note sounds only while it's being touched. On: like a piano's sustain pedal, each note rings for about 4 seconds after it's played. |
 
 Examples:

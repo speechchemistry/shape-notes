@@ -2,6 +2,9 @@
 <html>
 
 <head>
+    <!-- Lay the page out at the phone's real width, so the margin below is
+         a finger's width rather than shrunk to fit a desktop-sized page -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         /* Note colours, from the OKLCH model in issue #2: hues every 30°
            from a red anchor at 24°, lightness following a sine wave
@@ -48,7 +51,67 @@
             }
         }
 
+        /* The keyboard sits on a middle-grey panel (the colours are
+           tuned against it). Around it is a margin where the browser's own
+           pinch-zoom and scrolling still work, since only the keyboard
+           blocks touch gestures. The margin looks different so people can
+           see where to put their fingers to zoom: raised dots, like a
+           grip. */
+        :root {
+            --margin-width: 40px;
+            /* Raised-dot grip texture: each dot is --dot-spacing from its
+               six neighbours (triangular packing) */
+            --dot-spacing: 10px;
+            --dot-radius: 1.6px;
+            --dot-light: rgba(255, 255, 255, 0.4);
+            --dot-shadow: rgba(0, 0, 0, 0.4);
+            --dot-offset: 0.8px;
+
+            /* Triangular packing as a repeating rectangle of two dots: one
+               in the middle of the tile and one at its corners. The tile is
+               one spacing wide and two rows (spacing·√3) tall. */
+            --dot-tile-w: var(--dot-spacing);
+            --dot-tile-h: calc(var(--dot-spacing) * 1.7320508);
+            --dot-tile: var(--dot-tile-w) var(--dot-tile-h);
+            --dot-body: radial-gradient(circle, var(--background) var(--dot-radius), transparent calc(var(--dot-radius) + 0.5px));
+            --dot-lit: radial-gradient(circle, var(--dot-light) var(--dot-radius), transparent calc(var(--dot-radius) + 0.5px));
+            --dot-shaded: radial-gradient(circle, var(--dot-shadow) var(--dot-radius), transparent calc(var(--dot-radius) + 0.5px));
+            /* Where the second dot sits, half a tile across and down */
+            --dot-x2: calc(var(--dot-tile-w) / 2);
+            --dot-y2: calc(var(--dot-tile-h) / 2);
+        }
+
+        /* Each dot is three circles in the same grey as the background:
+           a highlight nudged up-left, a shadow nudged down-right, and the
+           dot itself on top. What shows is a light rim at the top-left and
+           a dark rim at the bottom-right, so the dots look raised, lit
+           from the top-left. The first layer listed is drawn on top, so
+           all the dot bodies come first, then highlights, then shadows. */
+        html {
+            background:
+                var(--dot-body) 0 0 / var(--dot-tile),
+                var(--dot-body) var(--dot-x2) var(--dot-y2) / var(--dot-tile),
+                var(--dot-lit) calc(0px - var(--dot-offset)) calc(0px - var(--dot-offset)) / var(--dot-tile),
+                var(--dot-lit) calc(var(--dot-x2) - var(--dot-offset)) calc(var(--dot-y2) - var(--dot-offset)) / var(--dot-tile),
+                var(--dot-shaded) var(--dot-offset) var(--dot-offset) / var(--dot-tile),
+                var(--dot-shaded) calc(var(--dot-x2) + var(--dot-offset)) calc(var(--dot-y2) + var(--dot-offset)) / var(--dot-tile),
+                var(--background);
+        }
+
+        /* The body fills the window, and the keyboard sits in the middle
+           of it; the script sizes the keyboard to fit (see fitKeyboard) */
         body {
+            margin: 0;
+            padding: var(--margin-width);
+            box-sizing: border-box;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #keyboard {
+            display: block;
             background-color: var(--background);
         }
 
@@ -137,6 +200,7 @@
         // Page options come from the URL, e.g. ?start=D3
         const params = new URLSearchParams(window.location.search);
 
+
         // Converts a note name like C3, Eb3 or Fs2 (s = sharp, since # in a
         // URL starts an anchor) to a MIDI number, using C4 = middle C = 60.
         // Returns null if the name isn't recognised.
@@ -219,17 +283,19 @@
         ];
 
         // Keyboard layouts, chosen with ?layout=, e.g. ?layout=pentatonic.
-        // pitchClasses lists which notes get a key; left/right are the
-        // viewBox edges in SVG units. Only keys whose whole hexagon fits
-        // between left and right are drawn.
+        // pitchClasses lists which notes get a key; left/right bound the
+        // area keys can go in, in SVG units. Only keys whose whole hexagon
+        // fits between left and right are drawn, and the keyboard is then
+        // trimmed to the keys that were drawn.
         const LAYOUTS = {
-            major: { pitchClasses: [0, 2, 4, 5, 7, 9, 11], left: 0, right: 400 },
+            diatonic: { pitchClasses: [0, 2, 4, 5, 7, 9, 11], left: 0, right: 400 },
             pentatonic: { pitchClasses: [0, 2, 4, 7, 9], left: 0, right: 400 },
             chromatic: { pitchClasses: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], left: -150, right: 550 },
         };
-        // Unrecognised values fall back to major
+        // Unrecognised values (including the old name, major) fall back to
+        // diatonic
         const layoutName = params.get('layout');
-        const layout = Object.hasOwn(LAYOUTS, layoutName) ? LAYOUTS[layoutName] : LAYOUTS.major;
+        const layout = Object.hasOwn(LAYOUTS, layoutName) ? LAYOUTS[layoutName] : LAYOUTS.diatonic;
 
         // The hexagon grid (Wicki–Hayden). Hexagons are 100 units apart
         // side to side, and rows are 100·√3/2 apart. Each row is offset by
@@ -237,6 +303,7 @@
         const SVG_NS = 'http://www.w3.org/2000/svg';
         const ROWS = 5;
         const ROW_HEIGHT = 50 * Math.sqrt(3);
+        const HEX_RADIUS = 100 / Math.sqrt(3);   // centre to top/bottom point
         const DO_X = 100;   // x of the bottom-left "do"
 
         // Pitch of the hexagon at (x, row), in semitones above the
@@ -279,6 +346,12 @@
         // hexagon key, looked up by its <use> element
         const noteMap = new Map();
 
+        // Centres of the leftmost and rightmost keys actually drawn. A
+        // layout can leave out the keys nearest its edges (pentatonic has
+        // no fa or ti), so these can be further in than left/right.
+        let minKeyX = Infinity;
+        let maxKeyX = -Infinity;
+
         const keysEl = document.getElementById('keys');
         for (let row = 0; row < ROWS; row++) {
             const y = 500 - ROW_HEIGHT * (row + 1);
@@ -302,11 +375,41 @@
                 hex.setAttribute('transform', `translate(${x} ${y})`);
                 keysEl.appendChild(hex);
                 noteMap.set(hex, semitones);
+                minKeyX = Math.min(minKeyX, x);
+                maxKeyX = Math.max(maxKeyX, x);
             }
         }
 
         const svgEl = document.getElementById('keyboard');
-        svgEl.setAttribute('viewBox', `${layout.left} 0 ${layout.right - layout.left} 500`);
+        // Fit the viewBox to the keys that were drawn: side to side from the
+        // outer edges of the leftmost and rightmost keys (hexagons are 100
+        // wide), and top to bottom from the top row's upper points to the
+        // bottom row's lower points, so the keys touch every edge
+        const viewLeft = minKeyX - 50;
+        const viewWidth = maxKeyX + 50 - viewLeft;
+        const viewTop = 500 - ROW_HEIGHT * ROWS - HEX_RADIUS;
+        const viewBottom = 500 - ROW_HEIGHT + HEX_RADIUS;
+        const viewHeight = viewBottom - viewTop;
+        svgEl.setAttribute('viewBox', `${viewLeft} ${viewTop} ${viewWidth} ${viewHeight}`);
+
+        // Sizes the keyboard as large as fits inside the margin, keeping
+        // its shape, so every key is on screen at the start whichever way
+        // round the screen is; people can pinch-zoom in from there. Uses
+        // the page's layout size, which (unlike the visible area) doesn't
+        // change when someone pinch-zooms.
+        function fitKeyboard() {
+            const page = document.documentElement;
+            const bodyStyle = getComputedStyle(document.body);
+            const availableWidth = page.clientWidth
+                - parseFloat(bodyStyle.paddingLeft) - parseFloat(bodyStyle.paddingRight);
+            const availableHeight = page.clientHeight
+                - parseFloat(bodyStyle.paddingTop) - parseFloat(bodyStyle.paddingBottom);
+            const scale = Math.max(0, Math.min(availableWidth / viewWidth, availableHeight / viewHeight));
+            svgEl.style.width = `${viewWidth * scale}px`;
+            svgEl.style.height = `${viewHeight * scale}px`;
+        }
+        fitKeyboard();
+        window.addEventListener('resize', fitKeyboard);
 
         // Tracks, per pointerId (one entry per finger or the mouse), which
         // hexagon <use> element that pointer is currently over.
